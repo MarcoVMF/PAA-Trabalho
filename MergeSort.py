@@ -1,11 +1,3 @@
-import random
-
-def cria_vetor_randomico(num):
-    lista = []
-    for i in range(num):
-        x = random.randint(1, 25000)
-        lista.append(x)
-    return lista
 
 def merge_sort(arr):
     if len(arr) > 1:
@@ -37,6 +29,3 @@ def merge_sort(arr):
             j += 1
             k += 1
 
-# Função para verificar se o vetor está ordenado
-def esta_ordenado(arr):
-    return all(arr[i] <= arr[i + 1] for i in range(len(arr) - 1))
