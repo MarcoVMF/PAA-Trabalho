@@ -1,3 +1,4 @@
+
 def merge_sort(arr):
     if len(arr) > 1:
         meio = len(arr) // 2
@@ -27,3 +28,4 @@ def merge_sort(arr):
             arr[k] = metade_direita[j]
             j += 1
             k += 1
+
