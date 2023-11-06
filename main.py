@@ -12,7 +12,7 @@ def random_vector(num):
     return [random.randint(1, num) for _ in range(num)]
 
 def ordered_vector(num):
-    return list(range(1, num + 1))
+    return list (range(1, num + 1))
 
 def inversely_ordered_vector(num):
     return list(range(num, -1, -1))
@@ -23,19 +23,17 @@ def measure_time(sort_func, arr):
     end = time.perf_counter()
     return end - start
 
-def plot_graph(df, algorithm, type):
+def plot_graph(df, title, filename):
     plt.figure(figsize=(12, 8))
-    plt.title(type + " - Algoritmo de Ordenação - " + algorithm)
+    plt.title(title)
     plt.xlabel("Tamanho do Vetor")
     plt.ylabel("Tempo de Execução (s)")
     plt.grid(True)
-    plt.plot(df["Tamanho do Vetor"], df[algorithm], label=algorithm, linewidth=3)
+    for algo_name in df.columns[1:]:
+        plt.plot(df["Tamanho do Vetor"], df[algo_name], label=algo_name, linewidth=3)
     plt.legend()
-    plt.savefig(type + "_" + algorithm + ".png")
+    plt.savefig(filename)
     plt.close()
-
-
-
 
 def main():
     sorting_algorithms = {
@@ -52,47 +50,20 @@ def main():
 
     vet_length = [1000, 5000, 10000, 15000, 20000, 25000]
 
-    # Vetor aleatório
-    results_random = {"Tamanho do Vetor": vet_length}
     for algo_name, algo_func in sorting_algorithms.items():
-        algorithm_times = []
-        for num in vet_length:
-            arr = random_vector(num)
-            time_taken = measure_time(algo_func, arr)
-            algorithm_times.append(time_taken)
-        results_random[algo_name] = algorithm_times
-    dfRandom = pd.DataFrame(results_random)
-
-    for algo_name, algo_func in sorting_algorithms.items():
-        plot_graph(dfRandom, algo_name, "Vetor Aleatório")
-
-
-    # Vetor ordenado
-    results_ordered = {"Tamanho do Vetor": vet_length}
-    for algo_name, algo_func in sorting_algorithms.items():
-        algorithm_times = []
-        for num in vet_length:
-            arr = ordered_vector(num)
-            time_taken = measure_time(algo_func, arr)
-            algorithm_times.append(time_taken)
-        results_ordered[algo_name] = algorithm_times
-    dfOrdered = pd.DataFrame(results_ordered)
-
-    for algo_name, algo_func in sorting_algorithms.items():
-        plot_graph(dfOrdered, algo_name, "Vetor Ordenado")
-
-    # Vetor inversamente ordenado
-    results_inversely_ordered = {"Tamanho do Vetor": vet_length}
-    for algo_name, algo_func in sorting_algorithms.items():
-        algorithm_times = []
-        for num in vet_length:
-            arr = inversely_ordered_vector(num)
-            time_taken = measure_time(algo_func, arr)
-            algorithm_times.append(time_taken)
-        results_inversely_ordered[algo_name] = algorithm_times
-    dfInverselyOrdered = pd.DataFrame(results_inversely_ordered)
-    for algo_name, algo_func in sorting_algorithms.items():
-        plot_graph(dfInverselyOrdered, algo_name, "Vetor Inversamente Ordenado")
+        results = {"Tamanho do Vetor": vet_length}
+        for type_name, generator_func in [("Vetor Aleatório", random_vector),
+                                          ("Vetor Ordenado", ordered_vector),
+                                          ("Vetor Inversamente Ordenado", inversely_ordered_vector)]:
+            algorithm_times = []
+            for num in vet_length:
+                arr = generator_func(num)
+                time_taken = measure_time(algo_func, arr)
+                algorithm_times.append(time_taken)
+            results[type_name] = algorithm_times
+        df = pd.DataFrame(results)
+        df.to_excel(f"{algo_name}.xlsx")
+        plot_graph(df, f"Algoritmo de Ordenação - {algo_name}", f"{algo_name}.png")
 
 if __name__ == "__main__":
     main()
